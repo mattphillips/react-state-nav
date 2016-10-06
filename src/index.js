@@ -3,6 +3,8 @@ import { render } from 'react-dom';
 import App from './components/App';
 import './index.css';
 
+import { init, pop, push } from './lib/navigation';
+
 const initialState = {
   currentPage: 'one',
   values: {
@@ -26,21 +28,16 @@ const initialState = {
   }
 };
 
-const navigate = (update, state) => page => {
-  window.history.pushState(page, null, page);
-  update({
+const navigate = (updateState, state) => page => {
+  push(page);
+  updateState({
     ...state,
     currentPage: page
   });
 };
 
 const updateState = newState => {
-  window.onpopstate = e => {
-    updateState({
-      ...newState,
-      currentPage: e.state
-    });
-  };
+  pop(e => updateState({ ...newState, currentPage: e.state}));
 
   console.log('update state', newState);
 
@@ -50,10 +47,6 @@ const updateState = newState => {
   );
 };
 
-window.onload = () => {
-  if (history.state === null) {
-    window.history.replaceState(initialState.currentPage, null, null);
-  }
-};
+init(initialState.currentPage);
 
 updateState(initialState);
