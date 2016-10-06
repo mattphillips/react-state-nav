@@ -2,14 +2,6 @@ import React from 'react';
 import './App.css';
 import Page from '../Page';
 
-const click = (update, newPage, state) => (e) => {
-  window.history.pushState(newPage, null, newPage);
-  update({
-    ...state,
-    currentPage: newPage
-  });
-};
-
 const change = (update, state) => (e) => {
   const value = e.target.value;
   update({
@@ -21,7 +13,7 @@ const change = (update, state) => (e) => {
   });
 };
 
-export default function App ({ state, update }) {
+export default function App ({ navigate, state, update }) {
   const page = state.currentPage;
   const { routes, values } = state;
   return (
@@ -30,11 +22,11 @@ export default function App ({ state, update }) {
         <input onChange={change(update, state)} type="text" value={values[page]} />
         {
           page !== 'one' &&
-          <button type="button" onClick={click(update, routes[page].back, state)}>Back</button>
+          <button type="button" onClick={() => navigate(routes[page].back)}>Back</button>
         }
         {
           page !== 'three' &&
-          <button type="button" onClick={click(update, routes[page].forward, state)}>Forward</button>
+          <button type="button" onClick={() => navigate(routes[page].forward)}>Forward</button>
         }
       </Page>
     </div>

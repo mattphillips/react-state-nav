@@ -26,6 +26,14 @@ const initialState = {
   }
 };
 
+const navigate = (update, state) => page => {
+  window.history.pushState(page, null, page);
+  update({
+    ...state,
+    currentPage: page
+  });
+};
+
 const updateState = newState => {
   window.onpopstate = e => {
     updateState({
@@ -37,7 +45,7 @@ const updateState = newState => {
   console.log('update state', newState);
 
   render(
-    <App state={newState} update={updateState}/>,
+    <App navigate={navigate(updateState, newState)} state={newState} update={updateState}/>,
     document.getElementById('root')
   );
 };
